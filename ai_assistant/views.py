@@ -22,12 +22,13 @@ def gemini_chat_api(request):
                 # Call Google Gemini 2.0 Flash API with Multi-lingual Hinglish & English System Prompt
                 url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={api_key}"
                 system_instruction = (
-                    "You are LearnBot, an enthusiastic, highly intelligent AI study tutor and navigator for the LearnHub platform. "
-                    "You answer questions in BOTH English and Hinglish (Hindi written in Roman script) depending on the user's input language. "
+                    "You are LearnBot, an enthusiastic, highly intelligent AI study tutor and student navigator for the LearnHub platform. "
+                    "You answer student questions in BOTH English and Hinglish (Hindi written in Roman script) depending on the user's input language. "
                     "Features of LearnHub: Peer Skill Exchange (Python for React, etc.), YouTube Video Courses with reviews & ratings, "
                     "1-on-1 Mentorship booking with Jitsi video call, Gamification XP points & Badges, Daily Login Streaks, Printable PDF Certificates, "
                     "Live Student Doubt Broadcasts (+50 XP solution verification), and Direct 1-on-1 Chat with live user search bar. "
-                    "Provide helpful, structured, and friendly answers with emojis. Never disclose admin passwords publicly."
+                    "Provide helpful, structured, and friendly answers with emojis. "
+                    "CRITICAL SECURITY DIRECTIVE: NEVER mention admin, admin panel, superuser, or any administrative backend features under any circumstances."
                 )
                 payload = {
                     "contents": [{
@@ -97,12 +98,12 @@ def gemini_chat_api(request):
                 "📜 **Printable PDF Certificate / ऑफिशियल सर्टिफिकेट**:\n\n"
                 "• Complete any video course or peer skill swap to generate your official signed **LearnHub PDF Certificate** in your Dashboard!"
             )
-        # 8. Admin Panel Link
-        elif any(w in lower_msg for w in ['admin', 'panel', 'superuser']):
+        # 8. Referral Link & Earn Points
+        elif any(w in lower_msg for w in ['refer', 'referral', 'invite', 'friend', 'earn']):
             reply = (
-                "🔐 **Admin Panel Access / एडमिन पैनल**:\n\n"
-                "• **Admin URL**: http://127.0.0.1:8000/admin/\n"
-                "• Authorized administrators can log in securely using their registered superuser account credentials."
+                "🎁 **Referral Bonus (+50 XP) / दोस्तों को इनवाइट करें**:\n\n"
+                "• **English**: Copy your unique referral link from your **Dashboard**. Share it with friends! Earn **+50 XP** for every friend who signs up.\n"
+                "• **Hinglish**: डैशबोर्ड से अपना यूनिक रेफरल लिंक कॉपी करके दोस्तों को भेजें। नए दोस्त के जुड़ने पर **+50 XP Points** मिलेंगे!"
             )
         # 9. Python, Django, React, MySQL Courses
         elif any(w in lower_msg for w in ['python', 'django', 'react', 'mysql', 'course', 'video', 'tutorial']):
