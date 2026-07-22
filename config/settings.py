@@ -2,12 +2,12 @@ import os
 from pathlib import Path
 from dotenv import load_dotenv
 
-load_dotenv()
-
 BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(BASE_DIR / '.env')
 
-SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-learning-platform-key-2026')
-DEBUG = os.getenv('DEBUG', 'True') == 'True'
+SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-key-change-this-in-production-12345')
+DEBUG = os.getenv('DEBUG', 'True').lower() in ('true', '1', 't')
+
 ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
@@ -17,8 +17,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
-    # Local Apps
     'users',
     'courses',
     'bookings',
@@ -28,6 +26,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -57,16 +56,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
-# Database Setup: Supports MySQL if configured or USE_MYSQL=True, else SQLite3
-USE_MYSQL = os.getenv('USE_MYSQL', 'False') == 'True'
+# Database Setup: Supports MySQL if configured, else fallback SQLite3
+USE_MYSQL = os.getenv('USE_MYSQL', 'False').lower() in ('true', '1', 't')
 
 if USE_MYSQL:
-    try:
-        import pymysql
-        pymysql.install_as_MySQLdb()
-    except ImportError:
-        pass
-
+    import pymysql
+    pymysql.install_as_MySQLdb()
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
@@ -75,6 +70,9 @@ if USE_MYSQL:
             'PASSWORD': os.getenv('DB_PASSWORD', ''),
             'HOST': os.getenv('DB_HOST', '127.0.0.1'),
             'PORT': os.getenv('DB_PORT', '3306'),
+            'OPTIONS': {
+                'charset': 'utf8mb4',
+            }
         }
     }
 else:
@@ -100,6 +98,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
