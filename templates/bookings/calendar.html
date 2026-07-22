@@ -1,0 +1,217 @@
+{% extends 'base.html' %}
+
+{% block title %}Private 1-on-1 Mentorship & Career Guidance - LearnHub{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Header Banner -->
+    <div class="glass-card p-4 mb-4">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div>
+                <h2 class="fw-bold m-0 text-theme-primary"><i class="fa-solid fa-graduation-cap text-warning me-2"></i> Private 1-on-1 Mentorship & Student Peer Marketplace</h2>
+                <p class="text-theme-secondary small m-0 mt-1">Check student qualifications, skills & degrees, then book private appointments for **Career Roadmaps**, **Mock Interviews**, or **Code Audits** via instant **Jitsi Video Call**! (+25 XP Points)</p>
+            </div>
+            <a href="#bookingFormCard" class="btn btn-gradient">+ Book Private Session</a>
+        </div>
+    </div>
+
+    <!-- 3 Specialized Mentorship Modes Showcase Cards -->
+    <h4 class="fw-bold mb-3 text-theme-primary"><i class="fa-solid fa-layer-group text-primary me-2"></i> 3 Specialized 1-on-1 Mentorship Modes</h4>
+    <div class="row g-3 mb-5">
+        <div class="col-md-4">
+            <div class="glass-card p-4 h-100 border border-primary border-opacity-50 mode-card text-center">
+                <div class="fs-1 text-primary mb-2"><i class="fa-solid fa-map-location-dot"></i></div>
+                <h5 class="fw-bold text-theme-primary mb-2">🗺️ Career & Skill Roadmap</h5>
+                <p class="text-theme-secondary small mb-3">Get 1-on-1 personalized guidance on how to become a Full-Stack Developer, Python Engineer, or Data Scientist.</p>
+                <button class="btn btn-sm btn-outline-primary rounded-pill w-100 select-mode-btn" data-mode="Roadmap">Select Roadmap Session</button>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="glass-card p-4 h-100 border border-warning border-opacity-50 mode-card text-center">
+                <div class="fs-1 text-warning mb-2"><i class="fa-solid fa-laptop-code"></i></div>
+                <h5 class="fw-bold text-theme-primary mb-2">⚡ Mock Technical Interview</h5>
+                <p class="text-theme-secondary small mb-3">Practice live coding interview questions, DSA algorithms, and system design with peer feedback.</p>
+                <button class="btn btn-sm btn-outline-warning rounded-pill w-100 select-mode-btn" data-mode="MockInterview">Select Mock Interview</button>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="glass-card p-4 h-100 border border-success border-opacity-50 mode-card text-center">
+                <div class="fs-1 text-success mb-2"><i class="fa-solid fa-code-compare"></i></div>
+                <h5 class="fw-bold text-theme-primary mb-2">🔍 Pair Programming & Audit</h5>
+                <p class="text-theme-secondary small mb-3">Private 1-on-1 code audit session to optimize your Django/React project structure and fix complex architectural bugs.</p>
+                <button class="btn btn-sm btn-outline-success rounded-pill w-100 select-mode-btn" data-mode="CodeAudit">Select Code Audit</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Active Mentors Credentials Marketplace Cards -->
+    <h4 class="fw-bold mb-3 text-theme-primary"><i class="fa-solid fa-user-check text-info me-2"></i> Verified Student Mentors & Credentials</h4>
+    <div class="row g-3 mb-5">
+        {% for p in peers %}
+            <div class="col-md-6 col-lg-4">
+                <div class="glass-card p-4 h-100 d-flex flex-column justify-content-between">
+                    <div>
+                        <div class="d-flex align-items-center gap-3 mb-3">
+                            <img src="{{ p.profile.avatar }}" width="56" height="56" class="rounded-circle border border-2 border-primary shadow-sm" alt="Avatar">
+                            <div>
+                                <strong class="d-block text-theme-primary fs-6">{{ p.username }}</strong>
+                                <span class="badge bg-primary bg-opacity-25 text-primary border border-primary border-opacity-25">{{ p.profile.get_level }}</span>
+                            </div>
+                        </div>
+
+                        <!-- Credentials Box -->
+                        <div class="p-3 inner-skill-box mb-3">
+                            <div class="small mb-1 text-theme-primary">
+                                <i class="fa-solid fa-user-graduate text-warning me-1"></i> <strong>{{ p.profile.qualification }}</strong>
+                            </div>
+                            <div class="small mb-1 text-theme-secondary">
+                                <i class="fa-solid fa-book-bookmark text-info me-1"></i> {{ p.profile.current_study }}
+                            </div>
+                            <div class="small text-success fw-bold">
+                                <i class="fa-solid fa-code me-1"></i> {{ p.profile.skills_expertise }}
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center text-theme-secondary small">
+                            <span class="badge bg-dark border border-secondary text-warning"><i class="fa-solid fa-bolt me-1"></i> {{ p.profile.points }} XP</span>
+                            <span class="badge bg-dark border border-secondary text-danger">🔥 {{ p.profile.streak_count }} Days</span>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-sm btn-gradient w-100 mt-3 select-peer-btn" data-peer-id="{{ p.id }}" data-peer-name="{{ p.username }}">
+                        <i class="fa-solid fa-calendar-plus me-1"></i> Book Mentorship with {{ p.username }}
+                    </button>
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-12 text-center text-theme-secondary py-3">No other mentors available right now.</div>
+        {% endfor %}
+    </div>
+
+    <!-- Main Booking Section -->
+    <div class="row g-4" id="bookingFormCard">
+        <!-- Booking Form Column -->
+        <div class="col-lg-6">
+            <div class="glass-card p-4">
+                <h4 class="fw-bold mb-3 text-theme-primary"><i class="fa-solid fa-calendar-plus text-success me-2"></i> Schedule Private Appointment</h4>
+
+                <form method="POST" action="{% url 'booking_calendar' %}">
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold text-theme-primary">Mentorship Mode *</label>
+                        <select name="session_mode" id="modeSelect" class="form-select" required>
+                            <option value="Roadmap">🗺️ Career & Skill Roadmap Guidance</option>
+                            <option value="MockInterview">⚡ Mock Technical Interview Practice</option>
+                            <option value="CodeAudit">🔍 Pair Programming & Deep Code Audit</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold text-theme-primary">Session Topic / Goals *</label>
+                        <input type="text" name="topic" id="topicInput" class="form-control" placeholder="e.g. Django Full Stack Roadmap, Data Structures Interview prep..." required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold text-theme-primary">Selected Student Mentor *</label>
+                        <select name="mentor_user_id" id="peerSelect" class="form-select" required>
+                            <option value="" disabled selected>-- Select mentor for session --</option>
+                            {% for p in peers %}
+                                <option value="{{ p.id }}">👤 {{ p.username }} ({{ p.profile.qualification }} - {{ p.profile.points }} XP)</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold text-theme-primary">Date *</label>
+                            <input type="date" name="date" class="form-control" min="{{ today }}" value="{{ today }}" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold text-theme-primary">Time Slot *</label>
+                            <select name="time_slot" class="form-select" required>
+                                <option value="10:00 AM - 11:00 AM">10:00 AM - 11:00 AM</option>
+                                <option value="02:00 PM - 03:00 PM">02:00 PM - 03:00 PM</option>
+                                <option value="05:00 PM - 06:00 PM">05:00 PM - 06:00 PM</option>
+                                <option value="08:00 PM - 09:00 PM">08:00 PM - 09:00 PM</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold text-theme-primary">Session Preparation Notes</label>
+                        <textarea name="notes" class="form-control" rows="3" placeholder="Describe your expectations or attach questions for the session..."></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-gradient w-100 py-3 fs-6">
+                        Confirm & Lock Appointment Slot 🔒
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Booked Appointments Column -->
+        <div class="col-lg-6">
+            <div class="glass-card p-4 h-100">
+                <h4 class="fw-bold mb-3 text-theme-primary"><i class="fa-solid fa-clock-history text-info me-2"></i> Your Mentorship Appointments</h4>
+                
+                <div class="d-flex flex-column gap-3">
+                    {% for b in bookings %}
+                        <div class="p-3 inner-skill-box">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div>
+                                    <span class="badge bg-primary mb-1">{{ b.get_session_mode_display }}</span>
+                                    <h6 class="fw-bold m-0 text-theme-primary">{{ b.session_topic }}</h6>
+                                    <span class="text-theme-secondary small"><i class="fa-solid fa-user-graduate me-1 text-primary"></i> Mentor: <strong>{{ b.mentor_name }}</strong></span>
+                                </div>
+                                <span class="badge bg-success bg-opacity-25 text-success fw-semibold border border-success border-opacity-25">{{ b.status }}</span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center pt-2 border-top border-secondary mt-2">
+                                <span class="text-theme-secondary small"><i class="fa-regular fa-calendar me-1"></i> {{ b.booking_date }} ({{ b.time_slot }})</span>
+                                <a href="{% url 'video_call_room' b.jitsi_room_name %}" class="btn btn-sm btn-success px-3">
+                                    <i class="fa-solid fa-video me-1"></i> Join Private Jitsi Call
+                                </a>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <div class="text-center py-5 text-theme-secondary">
+                            <i class="fa-regular fa-calendar-xmark fs-1 mb-2"></i>
+                            <p class="m-0">No private appointments scheduled yet. Choose a mode above to schedule a session.</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Mode Selection Buttons
+    document.querySelectorAll('.select-mode-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const mode = this.getAttribute('data-mode');
+            const modeSelect = document.getElementById('modeSelect');
+            if (modeSelect) {
+                modeSelect.value = mode;
+                document.getElementById('bookingFormCard').scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+    });
+
+    // Peer Mentor Card Selection
+    document.querySelectorAll('.select-peer-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const peerId = this.getAttribute('data-peer-id');
+            const peerSelect = document.getElementById('peerSelect');
+            if (peerSelect) {
+                peerSelect.value = peerId;
+                document.getElementById('bookingFormCard').scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

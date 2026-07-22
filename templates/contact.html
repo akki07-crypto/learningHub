@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block title %}Contact & Formspree Form - LearnHub{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="glass-card p-4 p-md-5">
+                <div class="text-center mb-4">
+                    <span class="p-3 rounded-circle bg-primary bg-opacity-25 text-primary fs-3 d-inline-block mb-2">
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </span>
+                    <h2 class="fw-bold m-0 text-theme-primary">Contact & Instant Form Notifications</h2>
+                    <p class="text-theme-secondary small mt-1">
+                        Send us feedback or questions. Form submissions notify your Gmail inbox instantly using <strong>Formspree</strong>!
+                    </p>
+                </div>
+
+                <!-- Formspree HTML Form -->
+                {% if formspree_id %}
+                    <form action="https://formspree.io/f/{{ formspree_id }}" method="POST" class="needs-validation">
+                {% else %}
+                    <!-- Demo Form Target -->
+                    <form action="https://formspree.io/f/your_formspree_id_here" method="POST" class="needs-validation">
+                {% endif %}
+                    
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold text-theme-primary">Your Full Name</label>
+                            <input type="text" name="name" class="form-control" placeholder="e.g. John Doe" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold text-theme-primary">Your Gmail / Email Address</label>
+                            <input type="email" name="email" class="form-control" placeholder="e.g. john@gmail.com" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold text-theme-primary">Subject / Topic</label>
+                        <input type="text" name="subject" class="form-control" placeholder="e.g. Mentorship Request, General Query..." required>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold text-theme-primary">Your Message</label>
+                        <textarea name="message" class="form-control" rows="5" placeholder="Write your message here..." required></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-gradient w-100 py-3 fs-6">
+                        <i class="fa-solid fa-paper-plane me-2"></i> Submit Form to Gmail (Formspree)
+                    </button>
+                </form>
+
+                <!-- Code Snippet Box for User -->
+                <div class="mt-5 p-4 inner-skill-box">
+                    <h5 class="fw-bold text-theme-primary mb-2"><i class="fa-solid fa-code text-warning me-2"></i> How to Generate your Formspree Endpoint ID</h5>
+                    <ol class="text-theme-secondary small mb-3">
+                        <li>Go to <a href="https://formspree.io" target="_blank" class="text-primary fw-bold">Formspree.io</a> and create a free account (50 free submissions/month).</li>
+                        <li>Click <strong>+ New Form</strong> and set your notification Gmail address.</li>
+                        <li>Copy your Form Endpoint ID (e.g. <code>xpzgqvwb</code>).</li>
+                        <li>Open your <code>.env</code> file in <code>c:\new one\.env</code> and paste your ID:
+                            <pre class="bg-dark text-success p-2 rounded mt-2">FORMSPREE_ENDPOINT_ID=your_formspree_id_here</pre>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

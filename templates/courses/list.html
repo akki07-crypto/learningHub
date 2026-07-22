@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block title %}Explore Free YouTube Courses - LearnHub{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Header & Search Bar -->
+    <div class="glass-card p-4 mb-4">
+        <h2 class="fw-bold mb-3"><i class="fa-solid fa-magnifying-glass text-primary me-2"></i> Search & Filter Free Courses</h2>
+        
+        <form method="GET" action="{% url 'course_list' %}" class="row g-3">
+            <div class="col-md-5">
+                <input type="text" name="q" class="form-control" placeholder="Search Python, Web Dev, React, MySQL..." value="{{ selected_query }}">
+            </div>
+            <div class="col-md-3">
+                <select name="category" class="form-select">
+                    <option value="">All Categories</option>
+                    {% for cat in categories %}
+                        <option value="{{ cat.slug }}" {% if selected_cat == cat.slug %}selected{% endif %}>{{ cat.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <select name="difficulty" class="form-select">
+                    <option value="">All Difficulties</option>
+                    <option value="Beginner" {% if selected_difficulty == 'Beginner' %}selected{% endif %}>Beginner</option>
+                    <option value="Intermediate" {% if selected_difficulty == 'Intermediate' %}selected{% endif %}>Intermediate</option>
+                    <option value="Advanced" {% if selected_difficulty == 'Advanced' %}selected{% endif %}>Advanced</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-gradient w-100">Filter</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Courses Grid -->
+    <div class="row g-4">
+        {% for course in courses %}
+            <div class="col-lg-4 col-md-6">
+                <div class="glass-card h-100 d-flex flex-column overflow-hidden">
+                    <div class="position-relative">
+                        <img src="{{ course.thumbnail_url }}" class="card-img-top" alt="{{ course.title }}" style="height: 190px; object-fit: cover;">
+                        <span class="position-absolute top-0 end-0 m-2 badge bg-dark opacity-75"><i class="fa-brands fa-youtube text-danger me-1"></i> YouTube Free</span>
+                    </div>
+                    <div class="p-4 d-flex flex-column flex-grow-1">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="badge bg-primary bg-opacity-25 text-primary fw-semibold">{{ course.difficulty }}</span>
+                            <span class="star-rating small"><i class="fa-solid fa-star"></i> {{ course.average_rating }} ({{ course.review_count }})</span>
+                        </div>
+                        <h5 class="fw-bold card-title mb-2 text-truncate" title="{{ course.title }}">{{ course.title }}</h5>
+                        <p class="text-secondary small flex-grow-1 mb-3">{{ course.description|truncatewords:16 }}</p>
+                        <div class="d-flex justify-content-between align-items-center pt-3 border-top border-secondary">
+                            <span class="text-muted small"><i class="fa-solid fa-tv me-1"></i> {{ course.channel_title }}</span>
+                            <a href="{% url 'course_detail' course.id %}" class="btn btn-sm btn-gradient">Start Learning</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-12 text-center py-5">
+                <h4 class="text-muted">No courses found matching your criteria.</h4>
+                <p class="text-muted small">Try searching for different keywords like "Python", "Django", or "Web Development".</p>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

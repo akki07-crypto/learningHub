@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+
+{% block title %}Direct 1-on-1 Student Chat - LearnHub{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="glass-card overflow-hidden" style="min-height: 600px;">
+        <div class="row g-0 h-100" style="min-height: 600px;">
+            <!-- Left Sidebar: User Search & Conversations List -->
+            <div class="col-md-4 border-end border-secondary d-flex flex-column" style="background-color: var(--bg-card-inner);">
+                <!-- User Search Bar -->
+                <div class="p-3 border-bottom border-secondary">
+                    <form method="GET" action="{% url 'direct_messages' %}" class="input-group">
+                        <input type="text" name="q" id="userSearchInput" class="form-control form-control-sm" placeholder="🔍 Search username, skills, degree..." value="{{ search_q }}">
+                        <button type="submit" class="btn btn-primary btn-sm"><i class="fa-solid fa-magnifying-glass"></i></button>
+                    </form>
+                </div>
+
+                <!-- Users List -->
+                <div class="flex-grow-1 overflow-y-auto" id="userListContainer">
+                    {% for u in other_users %}
+                        <a href="{% url 'direct_messages' %}?user={{ u.id }}" class="text-decoration-none user-item-link">
+                            <div class="p-3 border-bottom border-secondary d-flex align-items-center gap-3 {% if active_user and active_user.id == u.id %}bg-primary bg-opacity-25{% endif %}" style="transition: background-color 0.2s;">
+                                <img src="{{ u.profile.avatar }}" width="42" height="42" class="rounded-circle border border-secondary" alt="Avatar">
+                                <div class="overflow-hidden flex-grow-1">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <strong class="text-theme-primary text-truncate small d-block">{{ u.username }}</strong>
+                                        <span class="badge bg-primary bg-opacity-10 text-primary" style="font-size: 0.65rem;">{{ u.profile.points }} XP</span>
+                                    </div>
+                                    <small class="text-theme-secondary d-block text-truncate" style="font-size: 0.75rem;">🎓 {{ u.profile.qualification }}</small>
+                                </div>
+                            </div>
+                        </a>
+                    {% empty %}
+                        <div class="p-4 text-center text-theme-secondary small">
+                            <i class="fa-solid fa-user-slash fs-3 mb-2"></i>
+                            <p class="m-0">No users found matching "{{ search_q }}".</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Right Main: Chat Messages Window -->
+            <div class="col-md-8 d-flex flex-column justify-content-between">
+                {% if active_user %}
+                    <!-- Chat Header -->
+                    <div class="p-3 border-bottom border-secondary d-flex justify-content-between align-items-center" style="background-color: var(--bg-card-inner);">
+                        <div class="d-flex align-items-center gap-3">
+                            <img src="{{ active_user.profile.avatar }}" width="44" height="44" class="rounded-circle border border-primary" alt="Avatar">
+                            <div>
+                                <h6 class="fw-bold m-0 text-theme-primary">{{ active_user.username }}</h6>
+                                <span class="text-theme-secondary small d-block" style="font-size: 0.75rem;">
+                                    🎓 {{ active_user.profile.qualification }} • 💡 {{ active_user.profile.skills_expertise }}
+                                </span>
+                            </div>
+                        </div>
+                        <a href="{% url 'booking_calendar' %}" class="btn btn-sm btn-outline-success">
+                            <i class="fa-solid fa-video me-1"></i> Book Video Call
+                        </a>
+                    </div>
+
+                    <!-- Chat Messages Feed -->
+                    <div class="p-4 flex-grow-1 overflow-y-auto d-flex flex-column gap-3" id="chatFeed" style="max-height: 440px;">
+                        {% for m in messages_list %}
+                            <div class="chat-bubble {% if m.sender == request.user %}user{% else %}bot{% endif %}" style="max-width: 75%;">
+                                <strong class="d-block small mb-1 opacity-75">{% if m.sender == request.user %}You{% else %}{{ m.sender.username }}{% endif %}</strong>
+                                <span>{{ m.content }}</span>
+                                <small class="d-block text-end opacity-50 mt-1" style="font-size: 0.65rem;">{{ m.timestamp|time:"H:i" }}</small>
+                            </div>
+                        {% empty %}
+                            <div class="text-center py-5 text-theme-secondary my-auto">
+                                <i class="fa-solid fa-comments fs-1 mb-2"></i>
+                                <h5>No messages yet with {{ active_user.username }}.</h5>
+                                <p class="small m-0">Send a greeting message to start your 1-on-1 conversation!</p>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Send Message Input Form -->
+                    <div class="p-3 border-top border-secondary">
+                        <form method="POST" action="{% url 'direct_messages' %}?user={{ active_user.id }}">
+                            {% csrf_token %}
+                            <div class="input-group">
+                                <input type="text" name="content" class="form-control" placeholder="Write your message to {{ active_user.username }}..." required autocomplete="off">
+                                <button type="submit" class="btn btn-gradient px-4"><i class="fa-solid fa-paper-plane me-1"></i> Send</button>
+                            </div>
+                        </form>
+                    </div>
+                {% else %}
+                    <!-- Empty Chat Placeholder -->
+                    <div class="d-flex flex-column align-items-center justify-content-center h-100 p-5 text-center my-auto">
+                        <i class="fa-regular fa-paper-plane display-3 text-primary mb-3"></i>
+                        <h4 class="fw-bold text-theme-primary">Select a Student to Start Chatting</h4>
+                        <p class="text-theme-secondary small" style="max-width: 400px;">Use the search bar on the left sidebar to search for any registered student by username, degree, or technical skills!</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const chatFeed = document.getElementById('chatFeed');
+    if (chatFeed) {
+        chatFeed.scrollTop = chatFeed.scrollHeight;
+    }
+
+    // Instant Client-side Search Filter for User List
+    const userSearchInput = document.getElementById('userSearchInput');
+    const userListContainer = document.getElementById('userListContainer');
+    
+    if (userSearchInput && userListContainer) {
+        userSearchInput.addEventListener('keyup', function() {
+            const filterVal = this.value.toLowerCase();
+            const userLinks = userListContainer.querySelectorAll('.user-item-link');
+            
+            userLinks.forEach(link => {
+                const textContent = link.textContent.toLowerCase();
+                if (textContent.includes(filterVal)) {
+                    link.style.display = 'block';
+                } else {
+                    link.style.display = 'none';
+                }
+            });
+        });
+    }
+});
+</script>
+{% endblock %}

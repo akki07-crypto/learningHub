@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}LearnHub - Ultimate Skill Exchange, Courses & Mentorship{% endblock %}</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Prism.js Syntax Highlighting CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <!-- Custom Theme CSS -->
+    <link rel="stylesheet" href="/static/css/styles.css">
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+
+    <!-- Clean Single-Row Navbar -->
+    <nav class="navbar navbar-expand-xl navbar-custom">
+        <div class="container">
+            <a class="navbar-brand brand-text-logo d-flex align-items-center gap-2 m-0 text-decoration-none" href="{% url 'home' %}">
+                <span class="p-2 rounded-3 bg-primary text-white fs-5 d-flex align-items-center justify-content-center" style="width: 36px; height: 36px;">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                </span>
+                <span><span class="text-primary">Learn</span><span class="brand-hub">Hub</span></span>
+            </a>
+            
+            <button class="navbar-toggler border-0 text-theme-primary" type="button" data-bs-toggle="collapse" data-bs-target="#navContent">
+                <i class="fa-solid fa-bars fs-3"></i>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navContent">
+                <!-- Navigation Items Center -->
+                <ul class="navbar-nav mx-auto align-items-xl-center gap-xl-1 py-2 py-xl-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'skills_index' %}">
+                            <i class="fa-solid fa-handshake text-warning"></i> Skill Swap
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'course_list' %}">
+                            <i class="fa-solid fa-book-open text-primary"></i> Courses
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'booking_calendar' %}">
+                            <i class="fa-regular fa-calendar-check text-success"></i> Mentorship
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'forum_index' %}">
+                            <i class="fa-solid fa-comments text-info"></i> Forum
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'leaderboard' %}">
+                            <i class="fa-solid fa-trophy text-warning"></i> Ranks
+                        </a>
+                    </li>
+                </ul>
+
+                <!-- Right Action Controls -->
+                <div class="d-flex align-items-center gap-2 flex-nowrap ms-auto">
+                    {% if user.is_authenticated %}
+                        <!-- Direct Messaging Icon -->
+                        <a href="{% url 'direct_messages' %}" class="btn nav-icon-btn position-relative" title="Direct Messages">
+                            <i class="fa-regular fa-paper-plane fs-6"></i>
+                        </a>
+
+                        <!-- Notification Bell Dropdown -->
+                        <div class="dropdown">
+                            <button class="btn nav-icon-btn position-relative" id="notifDropdown" data-bs-toggle="dropdown" title="Notifications">
+                                <i class="fa-regular fa-bell fs-6"></i>
+                                {% if unread_notifications_count > 0 %}
+                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.6rem;">
+                                        {{ unread_notifications_count }}
+                                    </span>
+                                {% endif %}
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end glass-card p-2 shadow-lg" style="width: 300px;">
+                                <li><h6 class="dropdown-header text-uppercase text-muted">Notifications</h6></li>
+                                {% for notif in nav_notifications %}
+                                    <li class="p-2 border-bottom border-secondary {% if not notif.is_read %}bg-primary bg-opacity-25 rounded{% endif %}">
+                                        <a href="{{ notif.link }}" class="text-decoration-none text-theme-primary small">
+                                            <strong class="d-block text-theme-primary">{{ notif.title }}</strong>
+                                            <span class="text-theme-secondary text-truncate d-block">{{ notif.message }}</span>
+                                        </a>
+                                    </li>
+                                {% empty %}
+                                    <li class="text-center p-3 text-muted small">No notifications yet.</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+
+                        <!-- User Profile Dropdown -->
+                        <div class="dropdown">
+                            <a class="btn btn-sm btn-outline-secondary user-profile-pill rounded-pill d-flex align-items-center gap-2 px-2 py-1 text-decoration-none" href="#" data-bs-toggle="dropdown">
+                                <img src="{{ user.profile.avatar }}" class="rounded-circle" width="24" height="24" alt="Avatar">
+                                <span class="fw-bold small d-none d-lg-inline text-theme-primary">{{ user.username }}</span>
+                                <span class="badge bg-primary rounded-pill" style="font-size: 0.7rem;">{{ user.profile.points }} XP</span>
+                                <span class="badge bg-danger rounded-pill" style="font-size: 0.7rem;">🔥 {{ user.profile.streak_count }}</span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end glass-card shadow-lg">
+                                <li><a class="dropdown-item" href="{% url 'dashboard' %}"><i class="fa-solid fa-user me-2"></i> Dashboard</a></li>
+                                <li><a class="dropdown-item" href="{% url 'direct_messages' %}"><i class="fa-solid fa-envelope me-2"></i> Messages</a></li>
+                                {% if user.is_staff or user.is_superuser %}
+                                    <li><a class="dropdown-item text-warning" href="/admin/" target="_blank"><i class="fa-solid fa-user-shield me-2"></i> Admin Panel</a></li>
+                                {% endif %}
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item text-danger" href="{% url 'logout' %}"><i class="fa-solid fa-right-from-bracket me-2"></i> Logout</a></li>
+                            </ul>
+                        </div>
+                    {% else %}
+                        <a class="btn btn-sm btn-outline-primary rounded-pill px-3" href="{% url 'login' %}">Login</a>
+                        <a class="btn btn-sm btn-gradient rounded-pill px-3" href="{% url 'register' %}">Get Started</a>
+                    {% endif %}
+
+                    <!-- Theme Toggle Icon Button -->
+                    <button class="btn nav-icon-btn" id="themeToggleBtn" title="Toggle Light/Dark Theme">
+                        ☀️
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Flash Messages -->
+    <div class="container my-3">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show rounded-4 shadow-sm" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+    <!-- Main Content -->
+    {% block content %}{% endblock %}
+
+    <!-- Attractive AI Chatbot Button & Drawer -->
+    <div class="chatbot-fab" id="chatbotFab" title="Ask Gemini AI Tutor">
+        <i class="fa-solid fa-robot"></i>
+    </div>
+
+    <div class="chatbot-window" id="chatbotWindow">
+        <div class="chat-header">
+            <div class="d-flex align-items-center gap-2">
+                <span class="online-dot"></span>
+                <i class="fa-solid fa-brain fs-5"></i>
+                <div>
+                    <h6 class="m-0 fw-bold">Gemini AI Tutor</h6>
+                    <span style="font-size: 0.7rem; opacity: 0.9;">Online • Smart Assistant (Eng/हिन्दी)</span>
+                </div>
+            </div>
+            <button class="btn btn-sm text-white" id="closeChatbot"><i class="fa-solid fa-xmark fs-5"></i></button>
+        </div>
+
+        <!-- Quick Question Chips (Hindi & English) -->
+        <div class="chat-chips-bar p-2 border-bottom border-secondary d-flex gap-2 overflow-x-auto" style="background: var(--bg-card-inner);">
+            <button class="btn btn-sm btn-outline-primary rounded-pill text-nowrap chip-btn" data-question="Skill Swap kaise kare?">🤝 Skill Swap</button>
+            <button class="btn btn-sm btn-outline-success rounded-pill text-nowrap chip-btn" data-question="Mentorship booking kaise kare?">📅 Mentorship Call</button>
+            <button class="btn btn-sm btn-outline-warning rounded-pill text-nowrap chip-btn" data-question="XP Points aur Badges kaise milega?">🏆 XP & Badges</button>
+            <button class="btn btn-sm btn-outline-info rounded-pill text-nowrap chip-btn" data-question="Best Python Courses available">🐍 Python Courses</button>
+        </div>
+
+        <div class="chat-messages" id="chatMessages">
+            <div class="chat-bubble bot">
+                👋 Hi! I am your <strong>Gemini AI Study Tutor</strong>. Ask me coding questions in <strong>English</strong> or <strong>Hinglish (Hindi)</strong>!
+            </div>
+        </div>
+        <div class="p-2 border-top border-secondary bg-body">
+            <div class="input-group">
+                <input type="text" id="chatInput" class="form-control border-0 bg-transparent text-theme-primary" placeholder="Ask AI in English or Hindi...">
+                <button class="btn btn-primary btn-sm rounded-circle px-3" id="sendChatBtn"><i class="fa-solid fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Clean Footer -->
+    <footer class="mt-5 py-4 border-top border-secondary text-center text-muted small">
+        <div class="container">
+            <p class="m-0">© 2026 LearnHub Skill Exchange Platform.</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap & Prism JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+    <script src="/static/js/main.js"></script>
+    <script src="/static/js/chatbot.js"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

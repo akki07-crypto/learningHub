@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ post.title }} - LearnHub Q&A{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Live Video Call Banner for this Doubt -->
+    <div class="glass-card p-4 mb-4 border border-success">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div>
+                <h5 class="fw-bold m-0 text-success"><i class="fa-solid fa-video me-2"></i> Live 1-on-1 Student Help Call Room Active</h5>
+                <p class="text-theme-secondary small m-0 mt-1">Want to explain or debug this problem live? Click below to join the dedicated Jitsi video call room!</p>
+            </div>
+            <div class="d-flex gap-2">
+                {% if user.is_authenticated and post.user != user %}
+                    <a href="{% url 'direct_messages' %}?user={{ post.user.id }}" class="btn btn-outline-info">
+                        <i class="fa-regular fa-paper-plane me-1"></i> Direct Chat
+                    </a>
+                {% endif %}
+                <a href="{% url 'video_call_room' jitsi_room %}" class="btn btn-success px-4 fw-bold">
+                    <i class="fa-solid fa-video me-2"></i> Join Live Video Call Room
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Doubt Main Card -->
+    <div class="glass-card p-4 mb-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="d-flex align-items-center gap-2">
+                <img src="{{ post.user.profile.avatar }}" width="42" height="42" class="rounded-circle border border-secondary" alt="Avatar">
+                <div>
+                    <strong class="d-block text-theme-primary fs-6">{{ post.user.username }}</strong>
+                    <span class="text-theme-secondary small" style="font-size: 0.75rem;">Posted {{ post.created_at|timesince }} ago • {{ post.user.profile.get_level }}</span>
+                </div>
+            </div>
+            <div class="d-flex gap-2">
+                <span class="badge bg-primary bg-opacity-25 text-primary border border-primary border-opacity-25 px-3 py-2">{{ post.category }}</span>
+                {% if post.is_solved %}
+                    <span class="badge bg-success px-3 py-2"><i class="fa-solid fa-circle-check me-1"></i> Solved</span>
+                {% else %}
+                    <span class="badge bg-danger bg-opacity-25 text-danger border border-danger border-opacity-25 px-3 py-2">Open Doubt</span>
+                {% endif %}
+            </div>
+        </div>
+
+        <h3 class="fw-bold mb-3 text-theme-primary">{{ post.title }}</h3>
+        
+        <div class="inner-skill-box mb-4">
+            <pre class="m-0 text-theme-primary" style="white-space: pre-wrap; font-family: inherit;">{{ post.content }}</pre>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center pt-3 border-top border-secondary">
+            <button class="btn btn-sm btn-outline-primary rounded-pill px-3" id="upvoteBtn" data-post-id="{{ post.id }}">
+                <i class="fa-solid fa-thumbs-up me-1"></i> Upvote (<span id="upvoteCount">{{ post.upvote_count }}</span>)
+            </button>
+            <span class="text-theme-secondary small"><i class="fa-solid fa-comments me-1"></i> {{ answers.count }} Solutions Posted</span>
+        </div>
+    </div>
+
+    <!-- Solutions List -->
+    <h4 class="fw-bold mb-3 text-theme-primary"><i class="fa-solid fa-lightbulb text-warning me-2"></i> Peer Solutions & Verified Answers</h4>
+
+    <div class="d-flex flex-column gap-3 mb-4">
+        {% for ans in answers %}
+            <div class="glass-card p-4 {% if ans.is_accepted %}border border-2 border-success shadow-lg{% endif %}">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <div class="d-flex align-items-center gap-2">
+                        <img src="{{ ans.user.profile.avatar }}" width="34" height="34" class="rounded-circle border border-secondary" alt="Avatar">
+                        <div>
+                            <strong class="d-block text-theme-primary small">{{ ans.user.username }}</strong>
+                            <span class="text-theme-secondary" style="font-size: 0.7rem;">{{ ans.created_at|timesince }} ago • {{ ans.user.profile.qualification }}</span>
+                        </div>
+                    </div>
+
+                    <div class="d-flex align-items-center gap-2">
+                        {% if ans.is_accepted %}
+                            <span class="badge bg-success p-2 fs-6"><i class="fa-solid fa-circle-check me-1"></i> Verified Correct Solution ✅ (+50 XP)</span>
+                        {% elif user.is_authenticated and post.user == user %}
+                            <!-- Only Doubt Author sees this button to verify the answer! -->
+                            <a href="{% url 'accept_answer' ans.id %}" class="btn btn-sm btn-outline-success">
+                                <i class="fa-solid fa-check me-1"></i> Mark as Verified Solution (+50 XP)
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <p class="text-theme-primary m-0 small mt-2" style="white-space: pre-wrap;">{{ ans.content }}</p>
+            </div>
+        {% empty %}
+            <div class="glass-card p-4 text-center text-theme-secondary">
+                <p class="m-0">No written solutions yet. Join the video call above or write a solution below to help your fellow student!</p>
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- Post Solution Form -->
+    {% if user.is_authenticated %}
+        <div class="glass-card p-4">
+            <h5 class="fw-bold mb-3 text-theme-primary">Write Your Solution (+20 XP Points & Solver Badge)</h5>
+            <form method="POST">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <textarea name="content" class="form-control" rows="4" placeholder="Explain the solution, code fix, or steps clearly..." required></textarea>
+                </div>
+                <button type="submit" class="btn btn-gradient">Post Solution 🚀</button>
+            </form>
+        </div>
+    {% else %}
+        <div class="glass-card p-4 text-center">
+            <p class="text-theme-secondary m-0"><a href="{% url 'login' %}">Login</a> to answer this doubt and earn +20 XP Points!</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.getElementById('upvoteBtn').addEventListener('click', function() {
+    const postId = this.getAttribute('data-post-id');
+    fetch(`/forum/upvote/${postId}/`, {
+        method: 'POST',
+        headers: { 'X-CSRFToken': '{{ csrf_token }}' }
+    })
+    .then(res => res.json())
+    .then(data => {
+        document.getElementById('upvoteCount').textContent = data.count;
+    });
+});
+</script>
+{% endblock %}

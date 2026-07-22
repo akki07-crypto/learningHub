@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block title %}User Login - LearnHub{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5 col-lg-4">
+            <div class="glass-card p-4 p-md-5">
+                <div class="text-center mb-4">
+                    <span class="p-3 rounded-circle bg-primary bg-opacity-25 text-primary fs-3 d-inline-block mb-2">
+                        <i class="fa-solid fa-right-to-bracket"></i>
+                    </span>
+                    <h3 class="fw-bold m-0">Welcome Back</h3>
+                    <p class="text-secondary small">Login to access your dashboard and booked calls.</p>
+                </div>
+
+                <form method="POST" action="{% url 'login' %}">
+                    {% csrf_token %}
+                    
+                    {% for field in form %}
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold small text-muted">{{ field.label }}</label>
+                            {{ field }}
+                            {% if field.errors %}
+                                <div class="text-danger small mt-1">{{ field.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+
+                    <button type="submit" class="btn btn-gradient w-100 py-2 mb-3">Sign In</button>
+                    
+                    <div class="text-center text-secondary small">
+                        Don't have an account? <a href="{% url 'register' %}" class="fw-bold text-primary">Register Here</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.querySelectorAll('input').forEach(el => {
+        if (!el.classList.contains('form-control') && el.type !== 'hidden') {
+            el.classList.add('form-control');
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ course.title }} - LearnHub{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row g-4">
+        <!-- Main Video & Overview Column -->
+        <div class="col-lg-8">
+            <!-- Video Player Embed -->
+            <div class="glass-card overflow-hidden mb-4 p-2">
+                <div class="ratio ratio-16x9 rounded-4 overflow-hidden shadow-lg bg-black">
+                    <iframe 
+                        src="https://www.youtube-nocookie.com/embed/{{ course.youtube_id }}?rel=0&autoplay=0&enablejsapi=1" 
+                        title="{{ course.title }}" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                        referrerpolicy="strict-origin-when-cross-origin"
+                        allowfullscreen>
+                    </iframe>
+                </div>
+                <!-- Direct YouTube Watch Fallback Button -->
+                <div class="p-2 d-flex justify-content-between align-items-center flex-wrap gap-2 border-top border-secondary mt-2">
+                    <span class="text-theme-secondary small"><i class="fa-brands fa-youtube text-danger me-1"></i> Official YouTube Video Embed</span>
+                    <a href="https://www.youtube.com/watch?v={{ course.youtube_id }}" target="_blank" class="btn btn-sm btn-outline-danger px-3">
+                        <i class="fa-solid fa-arrow-up-right-from-square me-1"></i> Open Directly in YouTube 📺
+                    </a>
+                </div>
+            </div>
+
+            <!-- Course Title, Description & Action Buttons -->
+            <div class="glass-card p-4 mb-4">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <h2 class="fw-bold m-0 text-theme-primary">{{ course.title }}</h2>
+                    <span class="star-rating fs-5 fw-bold"><i class="fa-solid fa-star text-warning"></i> {{ course.average_rating }}</span>
+                </div>
+                <div class="d-flex gap-3 text-theme-secondary small mb-3">
+                    <span><i class="fa-solid fa-user-tie me-1"></i> {{ course.channel_title }}</span>
+                    <span><i class="fa-solid fa-layer-group me-1"></i> {{ course.difficulty }}</span>
+                    <span><i class="fa-solid fa-eye me-1"></i> {{ course.views }} Views</span>
+                </div>
+
+                {% if user.is_authenticated %}
+                    <div class="d-flex gap-2 mb-3">
+                        <a href="{% url 'toggle_course_bookmark' course.id %}?action=bookmark" class="btn btn-sm {% if bookmark %}btn-warning{% else %}btn-outline-warning{% endif %}">
+                            <i class="fa-solid fa-bookmark me-1"></i> {% if bookmark %}Bookmarked{% else %}Save for Later{% endif %}
+                        </a>
+                        <a href="{% url 'toggle_course_bookmark' course.id %}?action=complete" class="btn btn-sm {% if bookmark.is_completed %}btn-success{% else %}btn-outline-success{% endif %}">
+                            <i class="fa-solid fa-circle-check me-1"></i> {% if bookmark.is_completed %}Completed (Certificate Generated!){% else %}Mark Complete (+50 XP){% endif %}
+                        </a>
+                    </div>
+                {% endif %}
+
+                <p class="text-theme-secondary fs-6 mb-0">{{ course.description }}</p>
+            </div>
+
+            <!-- Ratings & Reviews Section -->
+            <div class="glass-card p-4">
+                <h4 class="fw-bold mb-3 text-theme-primary"><i class="fa-solid fa-comments text-warning me-2"></i> User Ratings & Reviews</h4>
+
+                {% if user.is_authenticated %}
+                    <!-- Review Submission Inner Box -->
+                    <form method="POST" class="mb-4 p-3 inner-skill-box">
+                        {% csrf_token %}
+                        <h6 class="fw-bold mb-2 text-theme-primary">Leave Your Rating & Review (+15 XP)</h6>
+                        <div class="row g-2 mb-2">
+                            <div class="col-md-4">
+                                <select name="rating" class="form-select form-select-sm" required>
+                                    <option value="5">5 ★★★★★ (Excellent)</option>
+                                    <option value="4">4 ★★★★☆ (Good)</option>
+                                    <option value="3">3 ★★★☆☆ (Average)</option>
+                                    <option value="2">2 ★★☆☆☆ (Below Avg)</option>
+                                    <option value="1">1 ★☆☆☆☆ (Poor)</option>
+                                </select>
+                            </div>
+                            <div class="col-md-8">
+                                <input type="text" name="comment" class="form-control form-control-sm" placeholder="Write your review about this video course..." required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-sm btn-gradient mt-1">Submit Review</button>
+                    </form>
+                {% else %}
+                    <p class="text-theme-secondary small mb-4"><a href="{% url 'login' %}">Login</a> to write a review and earn XP points.</p>
+                {% endif %}
+
+                <!-- Reviews List -->
+                <div class="d-flex flex-column gap-3">
+                    {% for rev in reviews %}
+                        <div class="p-3 border-bottom border-secondary">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <span class="fw-bold text-theme-primary">{{ rev.user.username }}</span>
+                                <span class="star-rating small">
+                                    {% for i in "12345" %}
+                                        {% if forloop.counter <= rev.rating %}<i class="fa-solid fa-star text-warning"></i>{% else %}<i class="fa-regular fa-star text-warning"></i>{% endif %}
+                                    {% endfor %}
+                                </span>
+                            </div>
+                            <p class="text-theme-secondary small m-0">{{ rev.comment }}</p>
+                        </div>
+                    {% empty %}
+                        <p class="text-theme-secondary small">No reviews for this course yet. Be the first to review!</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar Column -->
+        <div class="col-lg-4">
+            <div class="glass-card p-4 mb-4 text-center">
+                <div class="fs-1 text-primary mb-2"><i class="fa-solid fa-video"></i></div>
+                <h5 class="fw-bold text-theme-primary">Stuck on a Concept?</h5>
+                <p class="text-theme-secondary small mb-3">Book a 1-on-1 Jitsi video call session with an expert mentor!</p>
+                <a href="{% url 'booking_calendar' %}" class="btn btn-gradient w-100">Schedule Mentorship Call</a>
+            </div>
+
+            <div class="glass-card p-4">
+                <h5 class="fw-bold mb-3 text-theme-primary">Related Courses</h5>
+                <div class="d-flex flex-column gap-3">
+                    {% for rel in related_courses %}
+                        <a href="{% url 'course_detail' rel.id %}" class="text-decoration-none text-body">
+                            <div class="d-flex gap-2 align-items-center">
+                                <img src="{{ rel.thumbnail_url }}" width="70" height="45" class="rounded object-fit-cover" alt="Thumbnail">
+                                <div class="overflow-hidden">
+                                    <strong class="d-block small text-theme-primary text-truncate">{{ rel.title }}</strong>
+                                    <span class="text-theme-secondary small" style="font-size: 0.75rem;"><i class="fa-solid fa-star text-warning"></i> {{ rel.average_rating }}</span>
+                                </div>
+                            </div>
+                        </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

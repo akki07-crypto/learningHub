@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block title %}Global XP & Streak Leaderboard - LearnHub{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Banner Header -->
+    <div class="glass-card p-4 mb-4 text-center">
+        <div class="display-5 text-warning mb-2"><i class="fa-solid fa-trophy"></i></div>
+        <h2 class="fw-extrabold mb-1 text-theme-primary">Global Learner Leaderboard</h2>
+        <p class="text-theme-secondary small m-0">Compete with peers! Earn XP points by completing courses, reviewing, asking questions, and maintaining daily login streaks.</p>
+    </div>
+
+    <!-- Leaderboard Rankings Table -->
+    <div class="glass-card overflow-hidden">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle m-0">
+                <thead class="border-bottom border-secondary" style="background-color: var(--bg-card-inner);">
+                    <tr>
+                        <th class="ps-4 text-theme-secondary" style="width: 90px;">Rank</th>
+                        <th class="text-theme-secondary">Learner Profile</th>
+                        <th class="text-theme-secondary">Level Status</th>
+                        <th class="text-theme-secondary">Daily Streak</th>
+                        <th class="pe-4 text-end text-theme-secondary">Experience (XP)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for profile in profiles %}
+                        <tr class="border-bottom border-secondary">
+                            <td class="ps-4 fw-bold fs-5">
+                                {% if forloop.counter == 1 %}
+                                    <span class="text-warning"><i class="fa-solid fa-crown me-1"></i> #1</span>
+                                {% elif forloop.counter == 2 %}
+                                    <span class="text-theme-secondary"><i class="fa-solid fa-medal me-1"></i> #2</span>
+                                {% elif forloop.counter == 3 %}
+                                    <span class="text-danger"><i class="fa-solid fa-medal me-1"></i> #3</span>
+                                {% else %}
+                                    <span class="text-theme-secondary">#{{ forloop.counter }}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center gap-3">
+                                    <img src="{{ profile.avatar }}" width="44" height="44" class="rounded-circle border border-secondary shadow-sm" alt="Avatar">
+                                    <div>
+                                        <strong class="d-block text-theme-primary fs-6">{{ profile.user.username }}</strong>
+                                        <span class="text-theme-secondary small" style="font-size: 0.75rem;">
+                                            🎓 {{ profile.qualification|default:"Learner" }} • Member since {{ profile.created_at|date:"M Y" }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                {% if profile.points >= 1000 %}
+                                    <span class="badge bg-warning bg-opacity-25 text-warning fw-semibold px-3 py-2 border border-warning border-opacity-25"><i class="fa-solid fa-crown me-1"></i> Master Mentor</span>
+                                {% elif profile.points >= 500 %}
+                                    <span class="badge bg-primary bg-opacity-25 text-primary fw-semibold px-3 py-2 border border-primary border-opacity-25"><i class="fa-solid fa-user-ninja me-1"></i> Tech Ninja</span>
+                                {% elif profile.points >= 250 %}
+                                    <span class="badge bg-info bg-opacity-25 text-info fw-semibold px-3 py-2 border border-info border-opacity-25"><i class="fa-solid fa-graduation-cap me-1"></i> Skill Scholar</span>
+                                {% else %}
+                                    <span class="badge bg-success bg-opacity-25 text-success fw-semibold px-3 py-2 border border-success border-opacity-25"><i class="fa-solid fa-rocket me-1"></i> Beginner Explorer</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span class="badge bg-danger rounded-pill px-3 py-2"><i class="fa-solid fa-fire me-1"></i> {{ profile.streak_count }} Days</span>
+                            </td>
+                            <td class="pe-4 text-end">
+                                <h5 class="fw-extrabold text-primary m-0"><i class="fa-solid fa-bolt me-1"></i> {{ profile.points }} XP</h5>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center text-theme-secondary py-4">No leaderboard records found.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
