@@ -27,7 +27,7 @@ def gemini_chat_api(request):
                     "Features of LearnHub: Peer Skill Exchange (Python for React, etc.), YouTube Video Courses with reviews & ratings, "
                     "1-on-1 Mentorship booking with Jitsi video call, Gamification XP points & Badges, Daily Login Streaks, Printable PDF Certificates, "
                     "Live Student Doubt Broadcasts (+50 XP solution verification), and Direct 1-on-1 Chat with live user search bar. "
-                    "Provide helpful, structured, and friendly answers with emojis."
+                    "Provide helpful, structured, and friendly answers with emojis. Never disclose admin passwords publicly."
                 )
                 payload = {
                     "contents": [{
@@ -77,33 +77,32 @@ def gemini_chat_api(request):
                 "• **English**: Go to **Messages** page. Use the live search bar (`🔍 Search username, skills, degree...`) to find any student and start chatting directly!\n"
                 "• **Hinglish**: **Messages** पेज खोलें और सर्च बार में किसी भी छात्र का Username, Degree या Skill टाइप करके 1-on-1 चैट शुरू करें!"
             )
-        # 5. XP Points, Badges & Leaderboard Ranks
+        # 5. Forgot Password / Reset Account
+        elif any(w in lower_msg for w in ['forgot', 'forget', 'password reset', 'reset password', 'pass']):
+            reply = (
+                "🔑 **Forgot Password & Account Recovery / पासवर्ड रीसेट**:\n\n"
+                "• **English**: Click 'Forgot Password?' on the Login page or visit `/users/password-reset/` to request a password reset link sent to your registered email!\n"
+                "• **Hinglish**: लॉग-इन या साइन-अप पेज पर **Forgot Password?** लिंक पर क्लिक करें और अपना ईमेल डालकर पासवर्ड रीसेट करें!"
+            )
+        # 6. XP Points, Badges & Leaderboard Ranks
         elif any(w in lower_msg for w in ['point', 'xp', 'badge', 'streak', 'rank', 'leaderboard', 'level']):
             reply = (
                 "🏆 **XP Points, Badges & Login Streaks / गेमिंग रिवॉर्ड्स**:\n\n"
                 "• **Earn XP**: +100 XP (Signup), +15 XP (Doubt/Offer), +25 XP (Mentorship), +30 XP (Swap Accept), +50 XP (Verified Solution/Referral).\n"
                 "• **Daily Streak**: Daily login rewards you with 🔥 streak days! Check your rank on the **Ranks Leaderboard**."
             )
-        # 6. Certificates & PDF Proof
+        # 7. Certificates & PDF Proof
         elif any(w in lower_msg for w in ['certificate', 'pdf', 'proof', 'download', 'print']):
             reply = (
                 "📜 **Printable PDF Certificate / ऑफिशियल सर्टिफिकेट**:\n\n"
                 "• Complete any video course or peer skill swap to generate your official signed **LearnHub PDF Certificate** in your Dashboard!"
             )
-        # 7. Referral Link & Earn Points
-        elif any(w in lower_msg for w in ['refer', 'referral', 'invite', 'friend', 'earn']):
+        # 8. Admin Panel Link
+        elif any(w in lower_msg for w in ['admin', 'panel', 'superuser']):
             reply = (
-                "🎁 **Referral Bonus (+50 XP) / दोस्तों को इनवाइट करें**:\n\n"
-                "• **English**: Copy your unique referral link from your **Dashboard**. Share it with friends! Earn **+50 XP** for every friend who signs up.\n"
-                "• **Hinglish**: डैशबोर्ड से अपना यूनिक रेफरल लिंक कॉपी करके दोस्तों को भेजें। नए दोस्त के जुड़ने पर **+50 XP Points** मिलेंगे!"
-            )
-        # 8. Admin Panel Credentials
-        elif any(w in lower_msg for w in ['admin', 'panel', 'login admin', 'superuser', 'password']):
-            reply = (
-                "🔐 **Admin Panel Login Credentials / एडमिन पैनल**:\n\n"
+                "🔐 **Admin Panel Access / एडमिन पैनल**:\n\n"
                 "• **Admin URL**: http://127.0.0.1:8000/admin/\n"
-                "• **Username**: `admin` | **Password**: `AdminPassword123`\n"
-                "• Manage all MySQL database records, users, courses, and bookings as Administrator!"
+                "• Authorized administrators can log in securely using their registered superuser account credentials."
             )
         # 9. Python, Django, React, MySQL Courses
         elif any(w in lower_msg for w in ['python', 'django', 'react', 'mysql', 'course', 'video', 'tutorial']):
@@ -120,7 +119,7 @@ def gemini_chat_api(request):
         else:
             reply = (
                 f"🤖 **LearnBot AI**: Thanks for asking: *'{user_message}'*!\n\n"
-                "You can ask me about: **Skill Swaps**, **Mentorship Video Calls**, **Live Doubts (+50 XP)**, **Direct Chat Search**, **Course Certificates**, or **Leaderboards** in English & Hindi!"
+                "You can ask me about: **Skill Swaps**, **Mentorship Video Calls**, **Live Doubts (+50 XP)**, **Direct Chat Search**, **Forgot Password**, or **Leaderboards** in English & Hindi!"
             )
 
         return JsonResponse({'reply': reply})
