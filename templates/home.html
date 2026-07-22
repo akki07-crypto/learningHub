@@ -8,32 +8,32 @@
     <div class="glass-card p-4 p-md-5 mb-5 overflow-hidden">
         <div class="row align-items-center g-4">
             <div class="col-lg-7 text-center text-lg-start">
-                <span class="badge badge-pill mb-3">
-                    <i class="fa-solid fa-sparkles text-warning"></i> Next-Gen Skill Exchange Ecosystem
+                <span class="badge bg-primary bg-opacity-25 text-primary border border-primary border-opacity-25 mb-3 px-3 py-2 rounded-pill fw-semibold">
+                    <i class="fa-solid fa-sparkles text-warning me-1"></i> Next-Gen Skill Exchange Ecosystem
                 </span>
-                <h1 class="display-4 hero-title mb-3" style="line-height: 1.15;">
+                <h1 class="display-4 hero-title mb-3 fw-extrabold text-theme-primary" style="line-height: 1.15;">
                     Trade Skills, Learn Free & <span class="gradient-text">Master Tech Faster</span>
                 </h1>
-                <p class="lead text-secondary mb-4 fs-5" style="max-width: 600px;">
+                <p class="lead text-theme-secondary mb-4 fs-5" style="max-width: 600px;">
                     Swap 1-on-1 coding skills with peers, access YouTube Data API video courses, book live Jitsi mentorship calls, and solve doubts with Gemini AI!
                 </p>
 
                 <!-- High Contrast Hero Search Input Bar -->
                 <form action="{% url 'course_list' %}" method="GET" class="mb-4">
                     <div class="input-group input-group-lg hero-search-container overflow-hidden" style="max-width: 580px;">
-                        <input type="text" name="q" class="form-control hero-search-input border-0" placeholder="Search Python, React, MySQL, AI...">
+                        <input type="text" name="q" class="form-control hero-search-input border-secondary" placeholder="Search Python, React, MySQL, AI...">
                         <button class="btn btn-gradient px-4 fs-6" type="submit"><i class="fa-solid fa-magnifying-glass me-2"></i> Explore</button>
                     </div>
                 </form>
 
-                <!-- Quick Skill Badges -->
+                <!-- Quick High-Contrast Skill Badges -->
                 <div class="d-flex align-items-center gap-2 flex-wrap justify-content-center justify-content-lg-start">
-                    <span class="text-muted small fw-semibold">Popular Skills:</span>
-                    <a href="{% url 'course_list' %}?q=Python" class="badge bg-body-tertiary text-body border border-secondary text-decoration-none px-3 py-2 rounded-pill">Python</a>
-                    <a href="{% url 'course_list' %}?q=Django" class="badge bg-body-tertiary text-body border border-secondary text-decoration-none px-3 py-2 rounded-pill">Django 5</a>
-                    <a href="{% url 'skills_index' %}?q=React" class="badge bg-body-tertiary text-body border border-secondary text-decoration-none px-3 py-2 rounded-pill">React JS</a>
-                    <a href="{% url 'course_list' %}?q=MySQL" class="badge bg-body-tertiary text-body border border-secondary text-decoration-none px-3 py-2 rounded-pill">MySQL</a>
-                    <a href="{% url 'course_list' %}?q=AI" class="badge bg-body-tertiary text-body border border-secondary text-decoration-none px-3 py-2 rounded-pill">Artificial Intelligence</a>
+                    <span class="text-theme-secondary small fw-semibold">Popular Skills:</span>
+                    <a href="{% url 'course_list' %}?q=Python" class="badge bg-primary bg-opacity-25 text-theme-primary border border-primary border-opacity-25 text-decoration-none px-3 py-2 rounded-pill fw-semibold">Python</a>
+                    <a href="{% url 'course_list' %}?q=Django" class="badge bg-primary bg-opacity-25 text-theme-primary border border-primary border-opacity-25 text-decoration-none px-3 py-2 rounded-pill fw-semibold">Django 5</a>
+                    <a href="{% url 'skills_index' %}?q=React" class="badge bg-primary bg-opacity-25 text-theme-primary border border-primary border-opacity-25 text-decoration-none px-3 py-2 rounded-pill fw-semibold">React JS</a>
+                    <a href="{% url 'course_list' %}?q=MySQL" class="badge bg-primary bg-opacity-25 text-theme-primary border border-primary border-opacity-25 text-decoration-none px-3 py-2 rounded-pill fw-semibold">MySQL</a>
+                    <a href="{% url 'course_list' %}?q=AI" class="badge bg-primary bg-opacity-25 text-theme-primary border border-primary border-opacity-25 text-decoration-none px-3 py-2 rounded-pill fw-semibold">Artificial Intelligence</a>
                 </div>
             </div>
 
@@ -49,150 +49,64 @@
         <div class="col-6 col-md-3">
             <div class="glass-card p-3 text-center">
                 <h3 class="fw-extrabold text-primary m-0">100%</h3>
-                <span class="text-secondary small">Free Platform</span>
+                <span class="text-theme-secondary small">Free Platform</span>
             </div>
         </div>
         <div class="col-6 col-md-3">
             <div class="glass-card p-3 text-center">
                 <h3 class="fw-extrabold text-success m-0">1-on-1</h3>
-                <span class="text-secondary small">Jitsi Video Mentorship</span>
+                <span class="text-theme-secondary small">Jitsi Video Mentorship</span>
             </div>
         </div>
         <div class="col-6 col-md-3">
             <div class="glass-card p-3 text-center">
                 <h3 class="fw-extrabold text-warning m-0">Gemini AI</h3>
-                <span class="text-secondary small">Instant Tutor Drawer</span>
+                <span class="text-theme-secondary small">Smart Study Tutor</span>
             </div>
         </div>
         <div class="col-6 col-md-3">
             <div class="glass-card p-3 text-center">
-                <h3 class="fw-extrabold text-danger m-0">PDF Seal</h3>
-                <span class="text-secondary small">Certificates Issued</span>
+                <h3 class="fw-extrabold text-info m-0">PDF Seal</h3>
+                <span class="text-theme-secondary small">Verified Certificates</span>
             </div>
         </div>
     </div>
 
-    <!-- Platform Highlights 5 Core + 5 Advanced Grid -->
+    <!-- Main Features Grid -->
     <div class="row g-4 mb-5">
-        <div class="col-md-3">
-            <div class="glass-card p-4 text-center h-100">
-                <div class="fs-1 text-warning mb-2"><i class="fa-solid fa-handshake"></i></div>
-                <h5 class="fw-bold">Skill Swap Engine</h5>
-                <p class="text-secondary small">Trade your Python knowledge for React UI/UX design skills.</p>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="glass-card p-4 text-center h-100">
-                <div class="fs-1 text-info mb-2"><i class="fa-solid fa-calendar-days"></i></div>
-                <h5 class="fw-bold">Mentorship Calendar</h5>
-                <p class="text-secondary small">Book 1-on-1 mentorship sessions with top software engineers.</p>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="glass-card p-4 text-center h-100">
-                <div class="fs-1 text-danger mb-2"><i class="fa-solid fa-fire"></i></div>
-                <h5 class="fw-bold">Daily Streaks & Ranks</h5>
-                <p class="text-secondary small">Earn XP points, maintain login streaks, and climb the Leaderboard.</p>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="glass-card p-4 text-center h-100">
-                <div class="fs-1 text-success mb-2"><i class="fa-solid fa-certificate"></i></div>
-                <h5 class="fw-bold">PDF Certificates</h5>
-                <p class="text-secondary small">Earn official verified completion certificates for completed courses.</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Featured YouTube Courses -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h3 class="fw-bold m-0 text-body">Featured Video Courses</h3>
-            <p class="text-secondary small m-0">Synced automatically from YouTube Data API v3</p>
-        </div>
-        <a href="{% url 'course_list' %}" class="btn btn-outline-primary rounded-pill px-4">View All Courses <i class="fa-solid fa-arrow-right ms-1"></i></a>
-    </div>
-
-    <div class="row g-4 mb-5">
-        {% for course in featured_courses %}
-            <div class="col-lg-4 col-md-6">
-                <div class="glass-card h-100 d-flex flex-column overflow-hidden">
-                    <div class="position-relative">
-                        <img src="{{ course.thumbnail_url }}" class="card-img-top" alt="{{ course.title }}" style="height: 190px; object-fit: cover;">
-                        <span class="position-absolute top-0 end-0 m-2 badge bg-dark opacity-75"><i class="fa-brands fa-youtube text-danger me-1"></i> YouTube Free</span>
-                    </div>
-                    <div class="p-4 d-flex flex-column flex-grow-1">
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span class="badge bg-primary bg-opacity-25 text-primary fw-semibold">{{ course.difficulty }}</span>
-                            <span class="star-rating small"><i class="fa-solid fa-star"></i> {{ course.average_rating }} ({{ course.review_count }})</span>
-                        </div>
-                        <h5 class="fw-bold card-title mb-2 text-truncate" title="{{ course.title }}">{{ course.title }}</h5>
-                        <p class="text-secondary small flex-grow-1 mb-3">{{ course.description|truncatewords:14 }}</p>
-                        <div class="d-flex justify-content-between align-items-center pt-3 border-top border-secondary">
-                            <span class="text-muted small"><i class="fa-solid fa-user-gear me-1"></i> {{ course.channel_title }}</span>
-                            <a href="{% url 'course_detail' course.id %}" class="btn btn-sm btn-gradient">Watch Free</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        {% empty %}
-            <div class="col-12 text-center py-4">
-                <p class="text-muted">Loading courses from API...</p>
-            </div>
-        {% endfor %}
-    </div>
-
-    <!-- Community Q&A Forum Preview & Top Learners Leaderboard -->
-    <div class="row g-4">
-        <!-- Forum Discussions -->
-        <div class="col-lg-8">
-            <div class="glass-card p-4 h-100">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h4 class="fw-bold m-0"><i class="fa-solid fa-comments text-primary me-2"></i> Active Community Discussions</h4>
-                    <a href="{% url 'forum_index' %}" class="btn btn-sm btn-outline-secondary">Go to Forum</a>
-                </div>
-                <div class="list-group list-group-flush bg-transparent">
-                    {% for post in recent_forum_posts %}
-                        <a href="{% url 'forum_detail' post.id %}" class="list-group-item list-group-item-action bg-transparent border-secondary p-3 text-body rounded mb-2">
-                            <div class="d-flex justify-content-between mb-1">
-                                <h6 class="fw-bold m-0">{{ post.title }}</h6>
-                                <span class="badge bg-secondary">{{ post.category }}</span>
-                            </div>
-                            <p class="text-muted small mb-2">{{ post.content|truncatewords:15 }}</p>
-                            <div class="d-flex gap-3 text-muted small">
-                                <span><i class="fa-solid fa-thumbs-up me-1 text-primary"></i> {{ post.upvote_count }} Upvotes</span>
-                                <span><i class="fa-solid fa-reply me-1 text-info"></i> {{ post.answer_count }} Answers</span>
-                                <span><i class="fa-solid fa-user me-1 text-warning"></i> {{ post.user.username }}</span>
-                            </div>
-                        </a>
-                    {% empty %}
-                        <p class="text-muted">No forum posts yet. Be the first to ask a question!</p>
-                    {% endfor %}
-                </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="glass-card p-4 h-100 feature-card text-center text-md-start">
+                <div class="fs-1 text-warning mb-3"><i class="fa-solid fa-handshake"></i></div>
+                <h5 class="fw-bold text-theme-primary mb-2">Peer Skill Swap</h5>
+                <p class="text-theme-secondary small mb-3">Teach what you know (e.g. Python) and learn what you want (e.g. React) 1-on-1 with peers.</p>
+                <a href="{% url 'skills_index' %}" class="btn btn-sm btn-outline-primary">Explore Swaps →</a>
             </div>
         </div>
 
-        <!-- Leaderboard -->
-        <div class="col-lg-4">
-            <div class="glass-card p-4 h-100">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h4 class="fw-bold m-0"><i class="fa-solid fa-trophy text-warning me-2"></i> Top Learners</h4>
-                    <a href="{% url 'leaderboard' %}" class="btn btn-sm btn-outline-warning">View Ranks</a>
-                </div>
-                <div class="d-flex flex-column gap-3">
-                    {% for profile in top_learners %}
-                        <div class="d-flex align-items-center justify-content-between p-2 rounded bg-body-tertiary border border-secondary">
-                            <div class="d-flex align-items-center gap-2">
-                                <img src="{{ profile.avatar }}" class="rounded-circle" width="36" height="36" alt="Avatar">
-                                <div>
-                                    <strong class="d-block text-body small">{{ profile.user.username }}</strong>
-                                    <span class="text-muted small" style="font-size: 0.75rem;">{{ profile.get_level }}</span>
-                                </div>
-                            </div>
-                            <span class="badge bg-primary rounded-pill">{{ profile.points }} XP</span>
-                        </div>
-                    {% endfor %}
-                </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="glass-card p-4 h-100 feature-card text-center text-md-start">
+                <div class="fs-1 text-primary mb-3"><i class="fa-solid fa-book-open"></i></div>
+                <h5 class="fw-bold text-theme-primary mb-2">YouTube Video Library</h5>
+                <p class="text-theme-secondary small mb-3">Curated programming courses powered by YouTube Data API v3 with video progress tracking.</p>
+                <a href="{% url 'course_list' %}" class="btn btn-sm btn-outline-primary">Browse Courses →</a>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3">
+            <div class="glass-card p-4 h-100 feature-card text-center text-md-start">
+                <div class="fs-1 text-success mb-3"><i class="fa-regular fa-calendar-check"></i></div>
+                <h5 class="fw-bold text-theme-primary mb-2">Jitsi Mentorship</h5>
+                <p class="text-theme-secondary small mb-3">Book live 1-on-1 WebRTC video call sessions with experienced mentors to solve complex code bugs.</p>
+                <a href="{% url 'booking_calendar' %}" class="btn btn-sm btn-outline-primary">Book Session →</a>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3">
+            <div class="glass-card p-4 h-100 feature-card text-center text-md-start">
+                <div class="fs-1 text-info mb-3"><i class="fa-solid fa-trophy"></i></div>
+                <h5 class="fw-bold text-theme-primary mb-2">XP Ranks & Badges</h5>
+                <p class="text-theme-secondary small mb-3">Earn XP points for reviewing, asking, and teaching. Unlock badges and climb the global ranks!</p>
+                <a href="{% url 'leaderboard' %}" class="btn btn-sm btn-outline-primary">View Ranks →</a>
             </div>
         </div>
     </div>
